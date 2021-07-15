@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h5 class="my-3 border-bottom pb-2">질문등록</h5>
+    <form method="post" class="post-form my-3">
+        {{ form.csrf_token }} <!-- form.csrf_token 코드 사입해서, CSRF 토근 오류탈출가능 -->
+
+        <!-- 오류 표시 Start -->
+            <!-- {{ form.errors }}의결과  =>
+                {'subject': ['This field is required.'],
+                'content': ['This field is required.'],
+                'csrf_token': ['The CSRF token is missing.']}-->
+        {% for field, errors in form.errors.items() %}
+        <div class="alert alert-danger" role="alert">
+            <strong>{{ form[field].label }}</strong>: {{ ', '. join(errors) }}
+        </div>
+        {% endfor %}
+        <!-- 오류 표시 End -->
+
+        <div class="form-group">
+            <label for="subject">제목</label>
+            <input type="text" class="form-control" name="subject" id="subject" value="{{ form.subject.data or '' }}">
+        </div>
+        <div class="form-group">
+            <label for="content">내용</label>
+            <textarea class='form-control' name="content" id="content" rows="5">{{ form.content.data or '' }}</textarea>
+        </div>
+
+        <!-- form.subject.data or ''
+             form.content.data or ''
+             form.subject.data 에서 (or '') 은 >> 현재 템플릿이 GET 방식으로 요청되는 경우 기존 입력값이 없으므로
+             None 로 출력되는데 > 이를 방지하기 위해서 사용했다. >> form.subject.data 에 값이 없을때 None 아니라 '' 으로 출력 된다.-->
+        <button type="submit" class="btn btn-primary">저장하기</button>
+    </form>
+</div>
+{% endblock %}
+
+<!-- 수작업으로 폼 작성하기 start-->
